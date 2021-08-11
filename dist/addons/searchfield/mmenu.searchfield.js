@@ -289,7 +289,7 @@ var initNoResultsMsg = function (wrapper) {
 Mmenu.prototype.search = function (input, query) {
     var _a;
     var _this = this;
-    var options = this.opts.searchfield, configs = this.conf.searchfield;
+    var options = this.opts.searchfield, configs = this.conf.searchfield, allOptions = this.opts;
     query = query || '' + input.value;
     query = query.toLowerCase().trim();
     var data = input['mmSearchfield'];
@@ -365,24 +365,107 @@ Mmenu.prototype.search = function (input, query) {
         if (options.panel.add) {
             //	Clone all matched listitems into the search panel
             var allitems_1 = [];
-            panels.forEach(function (panel) {
-                var listitems = DOM.filterLI(DOM.find(panel, '.mm-listitem'));
-                listitems = listitems.filter(function (listitem) { return !listitem.matches('.mm-hidden'); });
-                if (listitems.length) {
-                    //  Add a divider to indicate in what panel the listitems were.
-                    if (options.panel.dividers) {
-                        var divider = DOM.create('li.mm-divider');
-                        var title = DOM.find(panel, '.mm-navbar__title')[0];
-                        if (title) {
-                            divider.innerHTML = title.innerHTML;
-                            allitems_1.push(divider);
+            if (allOptions.slidingSubmenus) {
+                panels.forEach(function (panel) {
+                    var listitems = DOM.filterLI(DOM.find(panel, '.mm-listitem'));
+                    listitems = listitems.filter(function (listitem) { return !listitem.matches('.mm-hidden'); });
+                    if (listitems.length) {
+                        //  Add a divider to indicate in what panel the listitems were.
+                        if (options.panel.dividers) {
+                            var divider = DOM.create('li.mm-divider');
+                            var title = DOM.find(panel, '.mm-navbar__title')[0];
+                            if (title) {
+                                divider.innerHTML = title.innerHTML;
+                                allitems_1.push(divider);
+                            }
+                        }
+                        listitems.forEach(function (listitem) {
+                            allitems_1.push(listitem.cloneNode(true));
+                        });
+                    }
+                });
+            }
+            else {
+                //should be one panel
+                panels.forEach(function (panel) {
+                    var listitems = DOM.filterLI(DOM.find(panel, '.mm-listitem'));
+                    listitems = listitems.filter(function (listitem) { return !listitem.matches('.mm-hidden'); });
+                    if (listitems.length) {
+                        if (options.panel.dividers) {
+                            //we want to use the parent list item text if there is one,
+                            //otherwise use the navbar title
+                            var mappings = listitems.map(function (listItem) {
+                                var title = null;
+                                var parent = listItem.parentElement;
+                                if (parent)
+                                    parent = parent.parentElement;
+                                if (parent && parent.classList && parent.classList.contains("mm-panel")) {
+                                    title = DOM.find(parent, '.mm-listitem__text')[0];
+                                }
+                                if (!title) {
+                                    title = DOM.find(panel, '.mm-navbar__title')[0];
+                                }
+                                return {
+                                    item: listItem,
+                                    title: title,
+                                };
+                            });
+                            var groupedItemsByTitle = mappings.reduce(function (arr, item) {
+                                var temp = arr.filter(function (x) { return x.title === item.title; });
+                                if (!temp.length) {
+                                    arr.push({
+                                        title: item.title,
+                                        items: [item.item]
+                                    });
+                                }
+                                else {
+                                    temp[0].items.push(item.item);
+                                }
+                                return arr;
+                            }, new Array());
+                            // let groupedItemsByTitle:{title:HTMLElement, items:HTMLElement[]}[] = [];
+                            // mappings.forEach(mapping => {
+                            //     if (groupedItemsByTitle.length == 0) {
+                            //         const match = {
+                            //             title: mapping.title,
+                            //             items: [mapping.item]
+                            //         };
+                            //         groupedItemsByTitle.push(match);
+                            //     }
+                            //     else {
+                            //         const matches = groupedItemsByTitle.filter(title => title.title === mapping.title);
+                            //         if (matches.length) {
+                            //             const match = matches[0];
+                            //             match.items.push(mapping.item);
+                            //         }
+                            //         else {
+                            //             const match = {
+                            //                 title: mapping.title,
+                            //                 items: [mapping.item]
+                            //             };
+                            //             groupedItemsByTitle.push(match);
+                            //         }
+                            //     }
+                            // });
+                            groupedItemsByTitle.forEach(function (title) {
+                                if (title.title) {
+                                    var divider = DOM.create('li.mm-divider');
+                                    divider.innerHTML = title.title.innerHTML;
+                                    allitems_1.push(divider);
+                                }
+                                title.items.forEach(function (item) {
+                                    allitems_1.push(item.cloneNode(true));
+                                });
+                            });
+                        }
+                        else {
+                            listitems.forEach(function (listitem) {
+                                allitems_1.push(listitem.cloneNode(true));
+                            });
                         }
                     }
-                    listitems.forEach(function (listitem) {
-                        allitems_1.push(listitem.cloneNode(true));
-                    });
-                }
-            });
+                });
+            }
             //	Remove toggles and checks.
             allitems_1.forEach(function (listitem) {
                 listitem

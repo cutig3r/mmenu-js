@@ -380,7 +380,8 @@ Mmenu.prototype.search = function(
     query: string
 ) {
     var options = this.opts.searchfield,
-        configs = this.conf.searchfield;
+        configs = this.conf.searchfield,
+        allOptions = this.opts;
 
     query = query || '' + input.value;
     query = query.toLowerCase().trim();
@@ -481,28 +482,94 @@ Mmenu.prototype.search = function(
         if (options.panel.add) {
             //	Clone all matched listitems into the search panel
             let allitems: HTMLElement[] = [];
-            panels.forEach(panel => {
-                let listitems = DOM.filterLI(DOM.find(panel, '.mm-listitem'));
-                listitems = listitems.filter(
-                    listitem => !listitem.matches('.mm-hidden')
-                );
+            if (allOptions.slidingSubmenus) {
+                panels.forEach(panel => {
+                    let listitems = DOM.filterLI(DOM.find(panel, '.mm-listitem'));
+                    listitems = listitems.filter(
+                        listitem => !listitem.matches('.mm-hidden')
+                    );
 
-                if (listitems.length) {
-                    //  Add a divider to indicate in what panel the listitems were.
-                    if (options.panel.dividers) {
-                        let divider = DOM.create('li.mm-divider');
-                        let title = DOM.find(panel, '.mm-navbar__title')[0];
-                        if (title) {
-                            divider.innerHTML = title.innerHTML;
-                            allitems.push(divider);
+                    if (listitems.length) {
+                        //  Add a divider to indicate in what panel the listitems were.
+                        if (options.panel.dividers) {
+                            let divider = DOM.create('li.mm-divider');
+                            let title = DOM.find(panel, '.mm-navbar__title')[0];
+                            if (title) {
+                                divider.innerHTML = title.innerHTML;
+                                allitems.push(divider);
+                            }
                         }
-                    }
 
-                    listitems.forEach(listitem => {
-                        allitems.push(listitem.cloneNode(true) as HTMLElement);
-                    });
-                }
-            });
+                        listitems.forEach(listitem => {
+                            allitems.push(listitem.cloneNode(true) as HTMLElement);
+                        });
+                    }
+                });
+            }
+            else {
+                //should be one panel
+                panels.forEach(panel => {
+                    let listitems = DOM.filterLI(DOM.find(panel, '.mm-listitem'));
+                    listitems = listitems.filter(
+                        listitem => !listitem.matches('.mm-hidden')
+                    );
+
+                    if (listitems.length) {
+                        if (options.panel.dividers) {
+                            //we want to use the parent list item text if there is one,
+                            //otherwise fallback to the navbar title
+                            const mappings = listitems.map(listItem => {
+                                let title:HTMLElement = null;
+                                var parent = listItem.parentElement;
+                                if (parent) parent = parent.parentElement;
+                                if (parent && parent.classList && parent.classList.contains("mm-panel")) {
+                                    title = DOM.find(parent, '.mm-listitem__text')[0];
+                                }
+                                if (!title) {
+                                    title = DOM.find(panel, '.mm-navbar__title')[0];
+                                }
+
+                                return {
+                                    item: listItem,
+                                    title: title,
+                                };
+                            });
+                            let groupedItemsByTitle = mappings.reduce(
+                                function (arr, mapping) {
+                                    let temp = arr.filter(x => x.title === mapping.title);
+                                    if (!temp.length) {
+                                        arr.push({
+                                            title: mapping.title,
+                                            items: [mapping.item]
+                                        });
+                                    }
+                                    else {
+                                        temp[0].items.push(mapping.item);
+                                    }
+                                    return arr;
+                                },
+                                new Array<{title: HTMLElement, items:HTMLElement[]}>()
+                            );
+                            groupedItemsByTitle.forEach(grouped => {
+                                if (grouped.title) {
+                                    let divider = DOM.create('li.mm-divider');
+                                    divider.innerHTML = grouped.title.innerHTML;
+                                    allitems.push(divider);
+                                }
+
+                                grouped.items.forEach(item => {
+                                    allitems.push(item.cloneNode(true) as HTMLElement);
+                                });
+                            });
+                        }
+                        else {
+                            listitems.forEach(listitem => {
+                                allitems.push(listitem.cloneNode(true) as HTMLElement);
+                            });
+                        }                       
+                    }
+                });
+            }
 
             //	Remove toggles and checks.
             allitems.forEach(listitem => {
