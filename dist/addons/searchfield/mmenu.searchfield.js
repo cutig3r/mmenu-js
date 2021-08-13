@@ -448,8 +448,11 @@ Mmenu.prototype.search = function (input, query) {
                                         var item = grouped.titleAncestry[i];
                                         var matches = flattened_1.filter(function (f) { return f.title == item; });
                                         if (!matches.length) {
-                                            var divider = DOM.create('li.mm-divider');
-                                            divider.innerHTML = item.innerHTML;
+                                            var divider = null;
+                                            if (item) {
+                                                divider = DOM.create('li.mm-divider');
+                                                divider.innerHTML = item.innerHTML;
+                                            }
                                             flattened_1.push({
                                                 title: item,
                                                 divider: divider,

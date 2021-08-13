@@ -577,8 +577,11 @@ Mmenu.prototype.search = function(
                                         const item = grouped.titleAncestry[i];
                                         const matches = flattened.filter(f => f.title == item);
                                         if (!matches.length) {
-                                            let divider = DOM.create('li.mm-divider');
-                                            divider.innerHTML = item.innerHTML;
+                                            let divider:HTMLElement = null;
+                                            if (item) {
+                                                divider = DOM.create('li.mm-divider');
+                                                divider.innerHTML = item.innerHTML;
+                                            }
                                             flattened.push({
                                                 title: item,
                                                 divider: divider,
