@@ -392,26 +392,26 @@ Mmenu.prototype.search = function (input, query) {
                     listitems = listitems.filter(function (listitem) { return !listitem.matches('.mm-hidden'); });
                     if (listitems.length) {
                         if (options.panel.dividers) {
+                            var navbarTitle_1 = DOM.find(panel, '.mm-navbar__title')[0];
                             //we want to use the parent list item text if there is one,
                             //otherwise fallback to the navbar title
                             var mappings = listitems.map(function (listItem) {
-                                var allTitles = [];
+                                var titleAncestry = [];
                                 var parents = DOM.parents(listItem, ".mm-listitem");
                                 parents.forEach(function (parent) {
                                     var title = DOM.find(parent, '.mm-listitem__text')[0];
                                     if (title) {
-                                        allTitles.push(title);
+                                        titleAncestry.push(title);
                                     }
                                 });
-                                var navbarTitle = DOM.find(panel, '.mm-navbar__title')[0];
-                                if (navbarTitle) {
-                                    allTitles.push(navbarTitle);
+                                if (navbarTitle_1) {
+                                    titleAncestry.push(navbarTitle_1);
                                 }
-                                var title = allTitles.length ? allTitles[0] : null;
+                                var title = titleAncestry.length ? titleAncestry[0] : null;
                                 return {
                                     item: listItem,
                                     title: title,
-                                    allTitles: allTitles,
+                                    titleAncestry: titleAncestry,
                                 };
                             });
                             var groupedItemsByTitle = mappings.reduce(function (arr, mapping) {
@@ -419,7 +419,7 @@ Mmenu.prototype.search = function (input, query) {
                                 if (!matches.length) {
                                     arr.push({
                                         title: mapping.title,
-                                        allTitles: mapping.allTitles,
+                                        titleAncestry: mapping.titleAncestry,
                                         items: [mapping.item]
                                     });
                                 }
@@ -428,16 +428,74 @@ Mmenu.prototype.search = function (input, query) {
                                 }
                                 return arr;
                             }, new Array());
+                            // groupedItemsByTitle.forEach(grouped => {
+                            //     if (grouped.title) {
+                            //         //add dividers for each title in reverse order
+                            //         for (let i = grouped.titleAncestry.length - 1; i >= 0; i--) {
+                            //             let divider = DOM.create('li.mm-divider');
+                            //             divider.innerHTML = grouped.titleAncestry[i].innerHTML;
+                            //             allitems.push(divider);
+                            //         }
+                            //     }
+                            //     grouped.items.forEach(item => {
+                            //         allitems.push(item.cloneNode(true) as HTMLElement);
+                            //     });
+                            // });
+                            var flattened_1 = new Array();
                             groupedItemsByTitle.forEach(function (grouped) {
-                                if (grouped.title) {
-                                    //add dividers for each title in reverse order
-                                    for (var i = grouped.allTitles.length - 1; i >= 0; i--) {
-                                        var divider = DOM.create('li.mm-divider');
-                                        divider.innerHTML = grouped.allTitles[i].innerHTML;
-                                        allitems_1.push(divider);
+                                if (grouped.titleAncestry.length) {
+                                    var _loop_1 = function (i) {
+                                        var item = grouped.titleAncestry[i];
+                                        var matches = flattened_1.filter(function (f) { return f.title == item; });
+                                        if (matches.length) {
+                                            if (i > 1) {
+                                                matches[0].items.push(grouped.titleAncestry[i - 1]);
+                                            }
+                                        }
+                                        else {
+                                            var children = [];
+                                            if (i > 1) {
+                                                children = [grouped.titleAncestry[i - 1]];
+                                            }
+                                            var divider = DOM.create('li.mm-divider');
+                                            divider.innerHTML = item.innerHTML;
+                                            flattened_1.push({
+                                                title: item,
+                                                divider: divider,
+                                                items: children,
+                                            });
+                                        }
+                                    };
+                                    for (var i = grouped.titleAncestry.length - 1; i >= 1; i--) {
+                                        _loop_1(i);
                                     }
                                 }
-                                grouped.items.forEach(function (item) {
+                                {
+                                    var matches_1 = flattened_1.filter(function (f) { return f.title == grouped.title; });
+                                    if (matches_1.length) {
+                                        grouped.items.forEach(function (item) {
+                                            matches_1[0].items.push(item);
+                                        });
+                                    }
+                                    else {
+                                        var divider = null;
+                                        if (grouped.title) {
+                                            divider = DOM.create('li.mm-divider');
+                                            divider.innerHTML = grouped.title.innerHTML;
+                                        }
+                                        flattened_1.push({
+                                            title: grouped.title,
+                                            divider: divider,
+                                            items: grouped.items.map(function (x) { return x; }),
+                                        });
+                                    }
+                                }
+                            });
+                            flattened_1.forEach(function (flat) {
+                                if (flat.divider) {
+                                    allitems_1.push(flat.divider);
+                                }
+                                flat.items.forEach(function (item) {
                                     allitems_1.push(item.cloneNode(true));
                                 });
                             });

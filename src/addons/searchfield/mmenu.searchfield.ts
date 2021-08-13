@@ -516,28 +516,27 @@ Mmenu.prototype.search = function(
 
                     if (listitems.length) {
                         if (options.panel.dividers) {
+                            const navbarTitle = DOM.find(panel, '.mm-navbar__title')[0];
                             //we want to use the parent list item text if there is one,
                             //otherwise fallback to the navbar title
                             const mappings = listitems.map(listItem => {
-                                let allTitles:Array<HTMLElement> = [];
+                                const titleAncestry:Array<HTMLElement> = [];
                                 const parents = DOM.parents(listItem, ".mm-listitem");
                                 parents.forEach(parent => {
                                     const title = DOM.find(parent, '.mm-listitem__text')[0];
                                     if (title) {
-                                        allTitles.push(title);
+                                        titleAncestry.push(title);
                                     }
-                                })
-                                const navbarTitle = DOM.find(panel, '.mm-navbar__title')[0];
+                                });
+                                
                                 if (navbarTitle) {
-                                    allTitles.push(navbarTitle);
+                                    titleAncestry.push(navbarTitle);
                                 }
-
-                                const title = allTitles.length ? allTitles[0] : null;
-
+                                const title = titleAncestry.length ? titleAncestry[0] : null;
                                 return {
                                     item: listItem,
                                     title: title,
-                                    allTitles: allTitles,
+                                    titleAncestry: titleAncestry,
                                 };
                             });
                             const groupedItemsByTitle = mappings.reduce(
@@ -546,7 +545,7 @@ Mmenu.prototype.search = function(
                                     if (!matches.length) {
                                         arr.push({
                                             title: mapping.title,
-                                            allTitles: mapping.allTitles,
+                                            titleAncestry: mapping.titleAncestry,
                                             items: [mapping.item]
                                         });
                                     }
@@ -555,20 +554,78 @@ Mmenu.prototype.search = function(
                                     }
                                     return arr;
                                 },
-                                new Array<{title: HTMLElement, allTitles:HTMLElement[], items:HTMLElement[]}>()
+                                new Array<{title:HTMLElement, titleAncestry:HTMLElement[], items:HTMLElement[]}>()
                             );
+                            // groupedItemsByTitle.forEach(grouped => {
+                            //     if (grouped.title) {
+                            //         //add dividers for each title in reverse order
+                            //         for (let i = grouped.titleAncestry.length - 1; i >= 0; i--) {
+                            //             let divider = DOM.create('li.mm-divider');
+                            //             divider.innerHTML = grouped.titleAncestry[i].innerHTML;
+                            //             allitems.push(divider);
+                            //         }
+                            //     }
+                            //     grouped.items.forEach(item => {
+                            //         allitems.push(item.cloneNode(true) as HTMLElement);
+                            //     });
+                            // });
+
+                            const flattened = new Array<{title:HTMLElement, divider:HTMLElement, items:HTMLElement[]}>();
                             groupedItemsByTitle.forEach(grouped => {
-                                if (grouped.title) {
-                                    //add dividers for each title in reverse order
-                                    for (let i = grouped.allTitles.length - 1; i >= 0; i--) {
-                                        let divider = DOM.create('li.mm-divider');
-                                        divider.innerHTML = grouped.allTitles[i].innerHTML;
-                                        allitems.push(divider);
+                                if (grouped.titleAncestry.length) {
+                                    for (let i = grouped.titleAncestry.length - 1; i >= 1; i--) {
+                                        const item = grouped.titleAncestry[i];
+                                        const matches = flattened.filter(f => f.title == item);
+                                        if (matches.length) {
+                                            if (i > 1) {
+                                                matches[0].items.push(grouped.titleAncestry[i - 1]);
+                                            }
+                                        }
+                                        else {
+                                            let children:HTMLElement[] = [];
+                                            if (i > 1) {
+                                                children = [grouped.titleAncestry[i - 1]];
+                                            }
+                                            let divider = DOM.create('li.mm-divider');
+                                            divider.innerHTML = item.innerHTML;
+                                            flattened.push({
+                                                title: item,
+                                                divider: divider,
+                                                items: children,
+                                            });
+                                        }
                                     }
                                 }
-                                grouped.items.forEach(item => {
+                                
+                                {
+                                    const matches = flattened.filter(f => f.title == grouped.title);
+                                    if (matches.length) {
+                                        grouped.items.forEach(item => {
+                                            matches[0].items.push(item);
+                                        });
+                                    }
+                                    else {
+                                        let divider:HTMLElement = null;
+                                        if (grouped.title) {
+                                            divider = DOM.create('li.mm-divider');
+                                            divider.innerHTML = grouped.title.innerHTML;
+                                        }
+                                        flattened.push({
+                                            title: grouped.title,
+                                            divider: divider,
+                                            items: grouped.items.map((x) => x), //create a copy of the array
+                                        });
+                                    }
+                                }
+                            });
+
+                            flattened.forEach(flat => {
+                                if (flat.divider) {
+                                    allitems.push(flat.divider);
+                                }
+                                flat.items.forEach(item => {
                                     allitems.push(item.cloneNode(true) as HTMLElement);
-                                });
+                                })
                             });
                         }
                         else {
