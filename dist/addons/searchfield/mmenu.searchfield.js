@@ -393,7 +393,7 @@ Mmenu.prototype.search = function (input, query) {
                     if (listitems.length) {
                         if (options.panel.dividers) {
                             //we want to use the parent list item text if there is one,
-                            //otherwise use the navbar title
+                            //otherwise fallback to the navbar title
                             var mappings = listitems.map(function (listItem) {
                                 var title = null;
                                 var parent = listItem.parentElement;
@@ -410,50 +410,26 @@ Mmenu.prototype.search = function (input, query) {
                                     title: title,
                                 };
                             });
-                            var groupedItemsByTitle = mappings.reduce(function (arr, item) {
-                                var temp = arr.filter(function (x) { return x.title === item.title; });
+                            var groupedItemsByTitle = mappings.reduce(function (arr, mapping) {
+                                var temp = arr.filter(function (x) { return x.title === mapping.title; });
                                 if (!temp.length) {
                                     arr.push({
-                                        title: item.title,
-                                        items: [item.item]
+                                        title: mapping.title,
+                                        items: [mapping.item]
                                     });
                                 }
                                 else {
-                                    temp[0].items.push(item.item);
+                                    temp[0].items.push(mapping.item);
                                 }
                                 return arr;
                             }, new Array());
-                            // let groupedItemsByTitle:{title:HTMLElement, items:HTMLElement[]}[] = [];
-                            // mappings.forEach(mapping => {
-                            //     if (groupedItemsByTitle.length == 0) {
-                            //         const match = {
-                            //             title: mapping.title,
-                            //             items: [mapping.item]
-                            //         };
-                            //         groupedItemsByTitle.push(match);
-                            //     }
-                            //     else {
-                            //         const matches = groupedItemsByTitle.filter(title => title.title === mapping.title);
-                            //         if (matches.length) {
-                            //             const match = matches[0];
-                            //             match.items.push(mapping.item);
-                            //         }
-                            //         else {
-                            //             const match = {
-                            //                 title: mapping.title,
-                            //                 items: [mapping.item]
-                            //             };
-                            //             groupedItemsByTitle.push(match);
-                            //         }
-                            //     }
-                            // });
-                            groupedItemsByTitle.forEach(function (title) {
-                                if (title.title) {
+                            groupedItemsByTitle.forEach(function (grouped) {
+                                if (grouped.title) {
                                     var divider = DOM.create('li.mm-divider');
-                                    divider.innerHTML = title.title.innerHTML;
+                                    divider.innerHTML = grouped.title.innerHTML;
                                     allitems_1.push(divider);
                                 }
-                                title.items.forEach(function (item) {
+                                grouped.items.forEach(function (item) {
                                     allitems_1.push(item.cloneNode(true));
                                 });
                             });

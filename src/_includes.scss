@@ -40,17 +40,17 @@ $mm_include_searchfield: true !default;
 $mm_include_searchfield_btn: $mm_include_searchfield !default;
 $mm_include_searchfield_searchpanel: $mm_include_searchfield !default;
 
-$mm_include_sectionindexer: true !default;
-
-$mm_include_toggles: true !default;
-$mm_include_checks: true !default;
-
 $mm_include_setselected: true !default;
+
+$mm_include_sectionindexer: true !default;
 
 $mm_include_sidebar: true !default;
 $mm_include_sidebar_collapsed: $mm_include_sidebar !default;
 $mm_include_sidebar_expanded: $mm_include_sidebar !default;
 $mm_include_sidebar_blocker: $mm_include_sidebar !default;
+
+$mm_include_toggles: true !default;
+$mm_include_checks: true !default;
 
 $mm_include_borderstyle: true !default;
 $mm_include_borderstyle_none: $mm_include_borderstyle !default;
@@ -76,6 +76,12 @@ $mm_include_pagedim_white: $mm_include_pagedim !default;
 
 $mm_include_popup: true !default;
 
+$mm_include_positioning: true !default;
+$mm_include_positioning_right: $mm_include_positioning !default;
+$mm_include_positioning_top: $mm_include_positioning !default;
+$mm_include_positioning_bottom: $mm_include_positioning !default;
+$mm_include_positioning_front: $mm_include_positioning !default;
+
 $mm_include_shadows: true !default;
 $mm_include_shadows_page: $mm_include_shadows !default;
 $mm_include_shadows_menu: $mm_include_shadows !default;
@@ -85,9 +91,3 @@ $mm_include_themes: true !default;
 $mm_include_themes_white: $mm_include_themes !default;
 $mm_include_themes_dark: $mm_include_themes !default;
 $mm_include_themes_black: $mm_include_themes !default;
-
-$mm_include_positioning: true !default;
-$mm_include_positioning_right: $mm_include_positioning !default;
-$mm_include_positioning_top: $mm_include_positioning !default;
-$mm_include_positioning_bottom: $mm_include_positioning !default;
-$mm_include_positioning_front: $mm_include_positioning !default;
