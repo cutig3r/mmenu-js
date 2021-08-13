@@ -455,7 +455,9 @@ Mmenu.prototype.search = function (input, query) {
                                         else {
                                             var children = [];
                                             if (i > 1) {
-                                                children = [grouped.titleAncestry[i - 1]];
+                                                var childDivider = DOM.create('li.mm-divider');
+                                                childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
+                                                children = [childDivider];
                                             }
                                             var divider = DOM.create('li.mm-divider');
                                             divider.innerHTML = item.innerHTML;
