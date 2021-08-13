@@ -400,12 +400,6 @@ Mmenu.prototype.search = function (input, query) {
                                 if (parents.length) {
                                     title = DOM.find(parents[0], '.mm-listitem__text')[0];
                                 }
-                                // var parent = listItem.parentElement;
-                                // if (parent) parent = parent.parentElement;
-                                // if (parent) parent = parent.parentElement;
-                                // if (parent && parent.classList && parent.classList.contains("mm-listitem")) {
-                                //     title = DOM.find(parent, '.mm-listitem__text')[0];
-                                // }
                                 if (!title) {
                                     title = DOM.find(panel, '.mm-navbar__title')[0];
                                 }
