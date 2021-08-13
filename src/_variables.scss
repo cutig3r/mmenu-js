@@ -51,14 +51,14 @@ $mm_iconpanelSize: $mm_btnSize !default;
 
 $mm_sectionIndexerSize: 20px !default;
 
+$mm_sidebarCollapsedSize: $mm_btnSize !default;
+$mm_sidebarExpandedSize: $mm_menuMaxWidth !default;
+
 $mm_toggleCheckedColor: #4bd963 !default;
 $mm_toggleHeight: $mm_listitemSize - $mm_padding !default;
 $mm_toggleWidth: ($mm_toggleHeight * 2) - $mm_padding !default;
 $mm_checkHeight: $mm_btnSize - $mm_padding !default;
 $mm_checkWidth: $mm_btnSize - $mm_padding !default;
-
-$mm_sidebarCollapsedSize: $mm_btnSize !default;
-$mm_sidebarExpandedSize: $mm_menuMaxWidth !default;
 
 $mm_fullscreen_full: 1 !default;
 $mm_fullscreen_min: 140px !default;
