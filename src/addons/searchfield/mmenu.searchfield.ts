@@ -523,7 +523,7 @@ Mmenu.prototype.search = function(
                                 var parent = listItem.parentElement;
                                 if (parent) parent = parent.parentElement;
                                 if (parent) parent = parent.parentElement;
-                                if (parent) {
+                                if (parent && parent.classList && parent.classList.contains("mm-listitem")) {
                                     title = DOM.find(parent, '.mm-listitem__text')[0];
                                 }
                                 if (!title) {
