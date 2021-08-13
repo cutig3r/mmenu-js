@@ -448,19 +448,19 @@ Mmenu.prototype.search = function (input, query) {
                                         var item = grouped.titleAncestry[i];
                                         var matches = flattened_1.filter(function (f) { return f.title == item; });
                                         if (matches.length) {
-                                            if (i > 1) {
-                                                var childDivider = DOM.create('li.mm-divider');
-                                                childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
-                                                matches[0].items.push(childDivider);
-                                            }
+                                            // if (i > 1) {
+                                            //     let childDivider = DOM.create('li.mm-divider');
+                                            //     childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
+                                            //     matches[0].items.push(childDivider);
+                                            // }
                                         }
                                         else {
                                             var children = [];
-                                            if (i > 1) {
-                                                var childDivider = DOM.create('li.mm-divider');
-                                                childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
-                                                children = [childDivider];
-                                            }
+                                            // if (i > 1) {
+                                            //     let childDivider = DOM.create('li.mm-divider');
+                                            //     childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
+                                            //     children = [childDivider];
+                                            // }
                                             var divider = DOM.create('li.mm-divider');
                                             divider.innerHTML = item.innerHTML;
                                             flattened_1.push({

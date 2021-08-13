@@ -577,19 +577,19 @@ Mmenu.prototype.search = function(
                                         const item = grouped.titleAncestry[i];
                                         const matches = flattened.filter(f => f.title == item);
                                         if (matches.length) {
-                                            if (i > 1) {
-                                                let childDivider = DOM.create('li.mm-divider');
-                                                childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
-                                                matches[0].items.push(childDivider);
-                                            }
+                                            // if (i > 1) {
+                                            //     let childDivider = DOM.create('li.mm-divider');
+                                            //     childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
+                                            //     matches[0].items.push(childDivider);
+                                            // }
                                         }
                                         else {
                                             let children:HTMLElement[] = [];
-                                            if (i > 1) {
-                                                let childDivider = DOM.create('li.mm-divider');
-                                                childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
-                                                children = [childDivider];
-                                            }
+                                            // if (i > 1) {
+                                            //     let childDivider = DOM.create('li.mm-divider');
+                                            //     childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
+                                            //     children = [childDivider];
+                                            // }
                                             let divider = DOM.create('li.mm-divider');
                                             divider.innerHTML = item.innerHTML;
                                             flattened.push({
