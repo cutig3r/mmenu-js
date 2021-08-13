@@ -449,7 +449,9 @@ Mmenu.prototype.search = function (input, query) {
                                         var matches = flattened_1.filter(function (f) { return f.title == item; });
                                         if (matches.length) {
                                             if (i > 1) {
-                                                matches[0].items.push(grouped.titleAncestry[i - 1]);
+                                                var childDivider = DOM.create('li.mm-divider');
+                                                childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
+                                                matches[0].items.push(childDivider);
                                             }
                                         }
                                         else {

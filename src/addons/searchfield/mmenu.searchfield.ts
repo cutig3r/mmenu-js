@@ -578,7 +578,9 @@ Mmenu.prototype.search = function(
                                         const matches = flattened.filter(f => f.title == item);
                                         if (matches.length) {
                                             if (i > 1) {
-                                                matches[0].items.push(grouped.titleAncestry[i - 1]);
+                                                let childDivider = DOM.create('li.mm-divider');
+                                                childDivider.innerHTML = grouped.titleAncestry[i - 1].innerHTML;
+                                                matches[0].items.push(childDivider);
                                             }
                                         }
                                         else {
