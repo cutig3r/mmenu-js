@@ -395,37 +395,47 @@ Mmenu.prototype.search = function (input, query) {
                             //we want to use the parent list item text if there is one,
                             //otherwise fallback to the navbar title
                             var mappings = listitems.map(function (listItem) {
-                                var title = null;
+                                var allTitles = [];
                                 var parents = DOM.parents(listItem, ".mm-listitem");
-                                if (parents.length) {
-                                    title = DOM.find(parents[0], '.mm-listitem__text')[0];
+                                parents.forEach(function (parent) {
+                                    var title = DOM.find(parent, '.mm-listitem__text')[0];
+                                    if (title) {
+                                        allTitles.push(title);
+                                    }
+                                });
+                                var navbarTitle = DOM.find(panel, '.mm-navbar__title')[0];
+                                if (navbarTitle) {
+                                    allTitles.push(navbarTitle);
                                 }
-                                if (!title) {
-                                    title = DOM.find(panel, '.mm-navbar__title')[0];
-                                }
+                                var title = allTitles.length ? allTitles[0] : null;
                                 return {
                                     item: listItem,
                                     title: title,
+                                    allTitles: allTitles,
                                 };
                             });
                             var groupedItemsByTitle = mappings.reduce(function (arr, mapping) {
-                                var temp = arr.filter(function (x) { return x.title === mapping.title; });
-                                if (!temp.length) {
+                                var matches = arr.filter(function (x) { return x.title === mapping.title; });
+                                if (!matches.length) {
                                     arr.push({
                                         title: mapping.title,
+                                        allTitles: mapping.allTitles,
                                         items: [mapping.item]
                                     });
                                 }
                                 else {
-                                    temp[0].items.push(mapping.item);
+                                    matches[0].items.push(mapping.item);
                                 }
                                 return arr;
                             }, new Array());
                             groupedItemsByTitle.forEach(function (grouped) {
                                 if (grouped.title) {
-                                    var divider = DOM.create('li.mm-divider');
-                                    divider.innerHTML = grouped.title.innerHTML;
-                                    allitems_1.push(divider);
+                                    //add dividers for each title in reverse order
+                                    for (var i = grouped.allTitles.length - 1; i >= 0; i--) {
+                                        var divider = DOM.create('li.mm-divider');
+                                        divider.innerHTML = grouped.allTitles[i].innerHTML;
+                                        allitems_1.push(divider);
+                                    }
                                 }
                                 grouped.items.forEach(function (item) {
                                     allitems_1.push(item.cloneNode(true));

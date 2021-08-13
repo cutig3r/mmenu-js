@@ -519,43 +519,53 @@ Mmenu.prototype.search = function(
                             //we want to use the parent list item text if there is one,
                             //otherwise fallback to the navbar title
                             const mappings = listitems.map(listItem => {
-                                let title:HTMLElement = null;
-                                var parents = DOM.parents(listItem, ".mm-listitem");
-                                if (parents.length) {
-                                    title = DOM.find(parents[0], '.mm-listitem__text')[0];
+                                let allTitles:Array<HTMLElement> = [];
+                                const parents = DOM.parents(listItem, ".mm-listitem");
+                                parents.forEach(parent => {
+                                    const title = DOM.find(parent, '.mm-listitem__text')[0];
+                                    if (title) {
+                                        allTitles.push(title);
+                                    }
+                                })
+                                const navbarTitle = DOM.find(panel, '.mm-navbar__title')[0];
+                                if (navbarTitle) {
+                                    allTitles.push(navbarTitle);
                                 }
-                                if (!title) {
-                                    title = DOM.find(panel, '.mm-navbar__title')[0];
-                                }
+
+                                const title = allTitles.length ? allTitles[0] : null;
 
                                 return {
                                     item: listItem,
                                     title: title,
+                                    allTitles: allTitles,
                                 };
                             });
-                            let groupedItemsByTitle = mappings.reduce(
+                            const groupedItemsByTitle = mappings.reduce(
                                 function (arr, mapping) {
-                                    let temp = arr.filter(x => x.title === mapping.title);
-                                    if (!temp.length) {
+                                    const matches = arr.filter(x => x.title === mapping.title);
+                                    if (!matches.length) {
                                         arr.push({
                                             title: mapping.title,
+                                            allTitles: mapping.allTitles,
                                             items: [mapping.item]
                                         });
                                     }
                                     else {
-                                        temp[0].items.push(mapping.item);
+                                        matches[0].items.push(mapping.item);
                                     }
                                     return arr;
                                 },
-                                new Array<{title: HTMLElement, items:HTMLElement[]}>()
+                                new Array<{title: HTMLElement, allTitles:HTMLElement[], items:HTMLElement[]}>()
                             );
                             groupedItemsByTitle.forEach(grouped => {
                                 if (grouped.title) {
-                                    let divider = DOM.create('li.mm-divider');
-                                    divider.innerHTML = grouped.title.innerHTML;
-                                    allitems.push(divider);
+                                    //add dividers for each title in reverse order
+                                    for (let i = grouped.allTitles.length - 1; i >= 0; i--) {
+                                        let divider = DOM.create('li.mm-divider');
+                                        divider.innerHTML = grouped.allTitles[i].innerHTML;
+                                        allitems.push(divider);
+                                    }
                                 }
-
                                 grouped.items.forEach(item => {
                                     allitems.push(item.cloneNode(true) as HTMLElement);
                                 });
