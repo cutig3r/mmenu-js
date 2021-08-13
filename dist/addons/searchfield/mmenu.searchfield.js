@@ -399,7 +399,9 @@ Mmenu.prototype.search = function (input, query) {
                                 var parent = listItem.parentElement;
                                 if (parent)
                                     parent = parent.parentElement;
-                                if (parent && parent.classList && parent.classList.contains("mm-panel")) {
+                                if (parent)
+                                    parent = parent.parentElement;
+                                if (parent) {
                                     title = DOM.find(parent, '.mm-listitem__text')[0];
                                 }
                                 if (!title) {

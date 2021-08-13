@@ -40,9 +40,9 @@ $mm_include_searchfield: true !default;
 $mm_include_searchfield_btn: $mm_include_searchfield !default;
 $mm_include_searchfield_searchpanel: $mm_include_searchfield !default;
 
-$mm_include_setselected: true !default;
-
 $mm_include_sectionindexer: true !default;
+
+$mm_include_setselected: true !default;
 
 $mm_include_sidebar: true !default;
 $mm_include_sidebar_collapsed: $mm_include_sidebar !default;
@@ -52,14 +52,14 @@ $mm_include_sidebar_blocker: $mm_include_sidebar !default;
 $mm_include_toggles: true !default;
 $mm_include_checks: true !default;
 
-$mm_include_borderstyle: true !default;
-$mm_include_borderstyle_none: $mm_include_borderstyle !default;
-$mm_include_borderstyle_full: $mm_include_borderstyle !default;
-
 $mm_include_effects: true !default;
 $mm_include_effects_menuslide: $mm_include_effects !default;
 $mm_include_effects_panelsnone: $mm_include_effects !default;
 $mm_include_effects_panelsslide: $mm_include_effects !default;
+
+$mm_include_borderstyle: true !default;
+$mm_include_borderstyle_none: $mm_include_borderstyle !default;
+$mm_include_borderstyle_full: $mm_include_borderstyle !default;
 
 $mm_include_fullscreen: true !default;
 
