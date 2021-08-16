@@ -556,21 +556,16 @@ Mmenu.prototype.search = function(
                                 },
                                 new Array<{title:HTMLElement, titleAncestry:HTMLElement[], items:HTMLElement[]}>()
                             );
-                            const flattened = new Array<{title:HTMLElement, divider:HTMLElement, items:HTMLElement[]}>();
+                            
+                            const flattened = new Array<{title:HTMLElement, items:HTMLElement[]}>();
                             groupedItemsByTitle.forEach(grouped => {
                                 if (grouped.titleAncestry.length) {
                                     for (let i = grouped.titleAncestry.length - 1; i >= 1; i--) {
                                         const item = grouped.titleAncestry[i];
                                         const matches = flattened.filter(f => f.title === item);
                                         if (!matches.length) {
-                                            let divider:HTMLElement = null;
-                                            if (item) {
-                                                divider = DOM.create('li.mm-divider');
-                                                divider.innerHTML = item.innerHTML;
-                                            }
                                             flattened.push({
                                                 title: item,
-                                                divider: divider,
                                                 items: [],
                                             });
                                         }
@@ -585,14 +580,8 @@ Mmenu.prototype.search = function(
                                         });
                                     }
                                     else {
-                                        let divider:HTMLElement = null;
-                                        if (grouped.title) {
-                                            divider = DOM.create('li.mm-divider');
-                                            divider.innerHTML = grouped.title.innerHTML;
-                                        }
                                         flattened.push({
                                             title: grouped.title,
-                                            divider: divider,
                                             items: grouped.items.map((x) => x), //create a copy of the array
                                         });
                                     }
@@ -600,8 +589,10 @@ Mmenu.prototype.search = function(
                             });
 
                             flattened.forEach(flat => {
-                                if (flat.divider) {
-                                    allitems.push(flat.divider);
+                                if (flat.title) {
+                                    let divider = DOM.create('li.mm-divider');
+                                    divider.innerHTML = flat.title.innerHTML;
+                                    allitems.push(divider);
                                 }
                                 flat.items.forEach(item => {
                                     allitems.push(item.cloneNode(true) as HTMLElement);

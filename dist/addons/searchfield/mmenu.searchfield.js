@@ -435,14 +435,8 @@ Mmenu.prototype.search = function (input, query) {
                                         var item = grouped.titleAncestry[i];
                                         var matches = flattened_1.filter(function (f) { return f.title === item; });
                                         if (!matches.length) {
-                                            var divider = null;
-                                            if (item) {
-                                                divider = DOM.create('li.mm-divider');
-                                                divider.innerHTML = item.innerHTML;
-                                            }
                                             flattened_1.push({
                                                 title: item,
-                                                divider: divider,
                                                 items: [],
                                             });
                                         }
@@ -459,22 +453,18 @@ Mmenu.prototype.search = function (input, query) {
                                         });
                                     }
                                     else {
-                                        var divider = null;
-                                        if (grouped.title) {
-                                            divider = DOM.create('li.mm-divider');
-                                            divider.innerHTML = grouped.title.innerHTML;
-                                        }
                                         flattened_1.push({
                                             title: grouped.title,
-                                            divider: divider,
                                             items: grouped.items.map(function (x) { return x; }),
                                         });
                                     }
                                 }
                             });
                             flattened_1.forEach(function (flat) {
-                                if (flat.divider) {
-                                    allitems_1.push(flat.divider);
+                                if (flat.title) {
+                                    var divider = DOM.create('li.mm-divider');
+                                    divider.innerHTML = flat.title.innerHTML;
+                                    allitems_1.push(divider);
                                 }
                                 flat.items.forEach(function (item) {
                                     allitems_1.push(item.cloneNode(true));
