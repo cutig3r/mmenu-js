@@ -428,19 +428,6 @@ Mmenu.prototype.search = function (input, query) {
                                 }
                                 return arr;
                             }, new Array());
-                            // groupedItemsByTitle.forEach(grouped => {
-                            //     if (grouped.title) {
-                            //         //add dividers for each title in reverse order
-                            //         for (let i = grouped.titleAncestry.length - 1; i >= 0; i--) {
-                            //             let divider = DOM.create('li.mm-divider');
-                            //             divider.innerHTML = grouped.titleAncestry[i].innerHTML;
-                            //             allitems.push(divider);
-                            //         }
-                            //     }
-                            //     grouped.items.forEach(item => {
-                            //         allitems.push(item.cloneNode(true) as HTMLElement);
-                            //     });
-                            // });
                             var flattened_1 = new Array();
                             groupedItemsByTitle.forEach(function (grouped) {
                                 if (grouped.titleAncestry.length) {
