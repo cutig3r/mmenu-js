@@ -432,11 +432,11 @@ Mmenu.prototype.search = function (input, query) {
                             groupedItemsByTitle.forEach(function (grouped) {
                                 if (grouped.titleAncestry.length) {
                                     var _loop_1 = function (i) {
-                                        var item = grouped.titleAncestry[i];
-                                        var matches = flattened_1.filter(function (f) { return f.title === item; });
+                                        var title = grouped.titleAncestry[i];
+                                        var matches = flattened_1.filter(function (f) { return f.title === title; });
                                         if (!matches.length) {
                                             flattened_1.push({
-                                                title: item,
+                                                title: title,
                                                 items: [],
                                             });
                                         }

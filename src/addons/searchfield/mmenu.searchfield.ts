@@ -561,11 +561,11 @@ Mmenu.prototype.search = function(
                             groupedItemsByTitle.forEach(grouped => {
                                 if (grouped.titleAncestry.length) {
                                     for (let i = grouped.titleAncestry.length - 1; i >= 1; i--) {
-                                        const item = grouped.titleAncestry[i];
-                                        const matches = flattened.filter(f => f.title === item);
+                                        const title = grouped.titleAncestry[i];
+                                        const matches = flattened.filter(f => f.title === title);
                                         if (!matches.length) {
                                             flattened.push({
-                                                title: item,
+                                                title: title,
                                                 items: [],
                                             });
                                         }
