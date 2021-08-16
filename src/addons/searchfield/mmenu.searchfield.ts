@@ -561,7 +561,7 @@ Mmenu.prototype.search = function(
                                 if (grouped.titleAncestry.length) {
                                     for (let i = grouped.titleAncestry.length - 1; i >= 1; i--) {
                                         const item = grouped.titleAncestry[i];
-                                        const matches = flattened.filter(f => f.title == item);
+                                        const matches = flattened.filter(f => f.title === item);
                                         if (!matches.length) {
                                             let divider:HTMLElement = null;
                                             if (item) {
@@ -578,7 +578,7 @@ Mmenu.prototype.search = function(
                                 }
                                 
                                 {
-                                    const matches = flattened.filter(f => f.title == grouped.title);
+                                    const matches = flattened.filter(f => f.title === grouped.title);
                                     if (matches.length) {
                                         grouped.items.forEach(item => {
                                             matches[0].items.push(item);

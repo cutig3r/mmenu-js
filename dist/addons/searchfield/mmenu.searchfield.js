@@ -433,7 +433,7 @@ Mmenu.prototype.search = function (input, query) {
                                 if (grouped.titleAncestry.length) {
                                     var _loop_1 = function (i) {
                                         var item = grouped.titleAncestry[i];
-                                        var matches = flattened_1.filter(function (f) { return f.title == item; });
+                                        var matches = flattened_1.filter(function (f) { return f.title === item; });
                                         if (!matches.length) {
                                             var divider = null;
                                             if (item) {
@@ -452,7 +452,7 @@ Mmenu.prototype.search = function (input, query) {
                                     }
                                 }
                                 {
-                                    var matches_1 = flattened_1.filter(function (f) { return f.title == grouped.title; });
+                                    var matches_1 = flattened_1.filter(function (f) { return f.title === grouped.title; });
                                     if (matches_1.length) {
                                         grouped.items.forEach(function (item) {
                                             matches_1[0].items.push(item);
